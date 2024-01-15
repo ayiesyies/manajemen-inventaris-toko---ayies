@@ -20,22 +20,32 @@ function updateProduk($nama, $hargaBaru, $stokBaru) {
     echo "Informasi produk $nama berhasil diperbarui.\n";
 }
 
+// Fungsi untuk menangani formulir penambahan produk
+function handleTambahProduk() {
+    tambahProduk($_POST['nama'], $_POST['harga'], $_POST['stok']);
+}
+
+// Fungsi untuk menangani formulir pembaruan produk
+function handleUpdateProduk() {
+    $namaProduk = $_POST['nama'];
+    $produkDitemukan = cariProduk($namaProduk);
+    if ($produkDitemukan) {
+        updateProduk($namaProduk, $_POST['hargaBaru'], $_POST['stokBaru']);
+    } else {
+        echo "Produk tidak ditemukan.\n";
+    }
+}
+
 // Menangani input dari formulir atau request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $menuPilihan = $_POST['menuPilihan'];
 
     switch ($menuPilihan) {
         case 1:
-            tambahProduk($_POST['nama'], $_POST['harga'], $_POST['stok']);
+            handleTambahProduk();
             break;
         case 2:
-            $namaProduk = $_POST['nama'];
-            $produkDitemukan = cariProduk($namaProduk);
-            if ($produkDitemukan) {
-                updateProduk($namaProduk, $_POST['hargaBaru'], $_POST['stokBaru']);
-            } else {
-                echo "Produk tidak ditemukan.\n";
-            }
+            handleUpdateProduk();
             break;
         // Tambahkan case untuk fungsi penjualan dan lainnya sesuai kebutuhan
         default:
