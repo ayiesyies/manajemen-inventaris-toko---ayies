@@ -1,57 +1,36 @@
 <?php
-// Fungsi untuk menambahkan produk ke dalam inventaris
+$daftarProduk = array();
+
+function tampilkanDaftarProduk() {
+    global $daftarProduk;
+
+    echo "<ul>";
+    foreach ($daftarProduk as $produk) {
+        echo "<li>{$produk['nama']} - Harga: {$produk['harga']} - Stok: {$produk['stok']}</li>";
+    }
+    echo "</ul>";
+}
+
 function tambahProduk($nama, $harga, $stok) {
-    // Logika untuk menambahkan produk ke dalam inventaris
-    // Disini dapat disertakan koneksi ke database untuk menyimpan data
+    global $daftarProduk;
+
+    $produk = array(
+        'nama' => $nama,
+        'harga' => $harga,
+        'stok' => $stok
+    );
+
+    $daftarProduk[] = $produk;
+
     echo "Produk $nama berhasil ditambahkan.\n";
 }
 
-// Fungsi untuk mencari produk berdasarkan nama
-function cariProduk($nama) {
-    // Logika untuk mencari produk berdasarkan nama
-    // Disini dapat disertakan koneksi ke database untuk mencari data
-    return true; // Contoh sederhana, selalu mengembalikan true
-}
-
-// Fungsi untuk memperbarui informasi produk
-function updateProduk($nama, $hargaBaru, $stokBaru) {
-    // Logika untuk memperbarui informasi produk
-    // Disini dapat disertakan koneksi ke database untuk memperbarui data
-    echo "Informasi produk $nama berhasil diperbarui.\n";
-}
-
-// Fungsi untuk menangani formulir penambahan produk
-function handleTambahProduk() {
-    tambahProduk($_POST['nama'], $_POST['harga'], $_POST['stok']);
-}
-
-// Fungsi untuk menangani formulir pembaruan produk
-function handleUpdateProduk() {
-    $namaProduk = $_POST['nama'];
-    $produkDitemukan = cariProduk($namaProduk);
-    if ($produkDitemukan) {
-        updateProduk($namaProduk, $_POST['hargaBaru'], $_POST['stokBaru']);
-    } else {
-        echo "Produk tidak ditemukan.\n";
-    }
-}
-
-// Menangani input dari formulir atau request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $menuPilihan = $_POST['menuPilihan'];
+    $namaProduk = $_POST['nama'];
+    $hargaProduk = $_POST['harga'];
+    $stokProduk = $_POST['stok'];
 
-    switch ($menuPilihan) {
-        case 1:
-            handleTambahProduk();
-            break;
-        case 2:
-            handleUpdateProduk();
-            break;
-        // Tambahkan case untuk fungsi penjualan dan lainnya sesuai kebutuhan
-        default:
-            echo "Pilihan tidak valid.\n";
-            break;
-    }
+    tambahProduk($namaProduk, $hargaProduk, $stokProduk);
 }
 ?>
 
@@ -61,46 +40,90 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Inventaris Toko</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h1>Manajemen Inventaris Toko</h1>
-    
-    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-        <label for="menuPilihan">Pilih Menu:</label>
-        <select name="menuPilihan">
-            <option value="1">Tambah Produk</option>
-            <option value="2">Update Produk</option>
-            <!-- Tambahkan opsi lainnya sesuai dengan kebutuhan -->
-        </select>
+    <div class="container">
+        <h1>Manajemen Inventaris Toko</h1>
 
-        <br>
+        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+            <label for="nama">Nama Produk:</label>
+            <input type="text" name="nama" required>
 
-        <label for="nama">Nama Produk:</label>
-        <input type="text" name="nama" required>
+            <label for="harga">Harga:</label>
+            <input type="text" name="harga" required>
 
-        <br>
+            <label for="stok">Stok:</label>
+            <input type="text" name="stok" required>
 
-        <label for="harga">Harga:</label>
-        <input type="text" name="harga" required>
+            <input type="submit" value="Tambah Produk">
+        </form>
 
-        <br>
-
-        <label for="stok">Stok:</label>
-        <input type="text" name="stok" required>
-
-        <br>
-
-        <label for="hargaBaru">Harga Baru:</label>
-        <input type="text" name="hargaBaru">
-
-        <br>
-
-        <label for="stokBaru">Stok Baru:</label>
-        <input type="text" name="stokBaru">
-
-        <br>
-
-        <input type="submit" value="Submit">
-    </form>
+        <h2>Daftar Produk</h2>
+        <?php tampilkanDaftarProduk(); ?>
+    </div>
 </body>
 </html>
